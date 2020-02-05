@@ -1,0 +1,23 @@
+apiVersion: skaffold/v1alpha5
+kind: Config
+build:
+  artifacts:
+  - image: forgerock/igtest
+  tagPolicy:
+    sha256: {}
+deploy:
+  helm:
+    releases:
+    - name: sk-frconfig
+      chartPath: ../helm/frconfig
+      setValues:
+        domain: .example.com
+    - name: ig-test
+      chartPath: ../helm/openig
+      values:
+        image: forgerock/igtest
+      setValues:
+        config.path: /git
+        config.strategy: docker
+      imageStrategy:
+        helm: {}
